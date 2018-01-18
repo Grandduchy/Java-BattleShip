@@ -136,6 +136,27 @@ public abstract class Player {
 		return isEqual;
 	}
 	
+	public void registerShot() {
+		shots++;
+	}
+	
+	public void registerHit() {
+		registerShot();
+		hits++;
+	}
+	
+	public int shots() {
+		return shots;
+	}
+	
+	public int hits() {
+		return hits;
+	}
+	
+	public double accuracy() {
+		double d = (double)hits / (double)shots;
+		return (double)(Math.round(d * 100) / 100) * 100;
+	}
 	
 	public String name; // Name of the player
 	protected FriendGrid friendGrid = new FriendGrid();
@@ -145,5 +166,7 @@ public abstract class Player {
 	protected final Ship cruiser = new Ship("Cruiser", 3);
 	protected final Ship sub = new Ship("Submarine", 3);
 	protected final Ship destroyer = new Ship("Destroyer", 2);
+	private int shots = 0;
+	private int hits =0;
 	
 }
