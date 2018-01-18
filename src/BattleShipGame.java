@@ -44,14 +44,12 @@ public class BattleShipGame {
 			printIfBetter("Joshua Challenger", "Joshua Challenger", "\\u001B[4m");
 			System.out.print("\n");
 			Thread.sleep(5000);
-			System.out.println("Fork me on GitHub! : https://github.com/Grandduchy/Java-BattleShip");
-			Thread.sleep(5000);
 			System.out.println("Credit to Nintendo's NES and Gameboy Battleship Music");
 			Thread.sleep(5000);
 			System.out.println("Credit to http://www.freesfx.co.uk/ for the sound effects");
 			Thread.sleep(5000);
 			System.out.println("Thanks for playing!");
-			Thread.sleep(2500);
+			Thread.sleep(7500);
 		} catch(Exception e) {}
 		finally {
 			AudioThread.terminate();
@@ -86,13 +84,14 @@ public class BattleShipGame {
 	// Smart Ai game is slightly different than simpleAiGame as 
 	// this Ai needs to call extra functions inside the running game for it to operate
 	public static void initSmartAiGame(User p1, SmartAi p2) {
-		p1.debuggerShipPlace();//p1.setShips();
+		p1.setShips();
 		p2.setShips();
 		AudioThread.enableMainSound();
 		loop:
 		while (true) {
 			String userCord = p1.runTurn();
 			boolean hasHitAi = p2.setHit(p1.name(), userCord);
+			registerShot(p1, hasHitAi);
 			AudioThread.setHitEffect(hasHitAi);
 			waitForSound(1000); // need to wait for the sound to catch up to the next one
 			p1.setHitToGrid(hasHitAi, userCord);
@@ -101,10 +100,11 @@ public class BattleShipGame {
 				break loop;
 			}
 			String aiCord = p2.runTurn();
-			boolean hasHitp2 = p1.setHit(p2.name(), aiCord);
-			p2.didHitLastShot(hasHitp2);
-			AudioThread.setHitEffect(hasHitp2);
-			p2.setHitToGrid(hasHitp2, aiCord);
+			boolean hasHitp1 = p1.setHit(p2.name(), aiCord);
+			registerShot(p2, hasHitp1);
+			p2.didHitLastShot(hasHitp1);
+			AudioThread.setHitEffect(hasHitp1);
+			p2.setHitToGrid(hasHitp1, aiCord);
 			if (p1.isDestroyed()) {
 				System.out.println(p2.name() + " has Won!");
 				break loop;
@@ -122,18 +122,20 @@ public class BattleShipGame {
 		loop:
 		while(true) {
 			String p1Cord = p1.runTurn(); // Get the coordinate the player chooses
-			boolean hasHitp1 = p2.setHit(p1.name(), p1Cord); // determine if it hit the other player and register it on the ships
-			AudioThread.setHitEffect(hasHitp1); // create a sound effect if missed/hit
+			boolean hasHitp2 = p2.setHit(p1.name(), p1Cord); // determine if it hit the other player and register it on the ships
+			registerShot(p1, hasHitp2);
+			AudioThread.setHitEffect(hasHitp2); // create a sound effect if missed/hit
 			waitForSound(1000); // wait for the sound to catch up
-			p1.setHitToGrid(hasHitp1, p1Cord); // set the hit on the player's hostile grid
+			p1.setHitToGrid(hasHitp2, p1Cord); // set the hit on the player's hostile grid
 			if (p2.isDestroyed()) { // check if the second player is destroyed
 				System.out.println(p1.name() + " has Won!");
 				break loop;
 			}
 			String p2Cord = p2.runTurn();
-			boolean hasHitp2 = p1.setHit(p2.name(), p2Cord);
-			AudioThread.setHitEffect(hasHitp2);
-			p2.setHitToGrid(hasHitp2, p2Cord);
+			boolean hasHitp1 = p1.setHit(p2.name(), p2Cord);
+			registerShot(p2, hasHitp1);
+			AudioThread.setHitEffect(hasHitp1);
+			p2.setHitToGrid(hasHitp1, p2Cord);
 			if (p1.isDestroyed()) {
 				System.out.println(p2.name() + " has Won!");
 				break loop;
@@ -143,6 +145,9 @@ public class BattleShipGame {
 	
 	// Prints the hostile and friendly grids of both sides to display.
 	public static void printGrids(Player p1, Player p2) {
+		System.out.println((p1.shots() + p2.shots()) + " shots were fired.");
+		System.out.println(p1.name() + " fired " + p1.shots() + " hit " + p1.hits() + " for an accuracy of " + p1.accuracy() + "%");
+		System.out.println(p2.name() + " fired " + p2.shots() + " hit " + p2.hits() + " for an accuracy of " + p2.accuracy() + "%");
 		while (true) {
 			System.out.println("Printing commands = (1f) (1h) (2f) (2h)\n Enter any other key to quit");
 			String in = In.getString();
@@ -383,6 +388,13 @@ public class BattleShipGame {
 		try {
 			Thread.sleep(mili);
 		}catch(Exception e) {}
+	}
+	
+	private static void registerShot(Player p, boolean didHit) {
+		if (didHit)
+			p.registerHit();
+		else
+			p.registerShot();
 	}
 	
 }
