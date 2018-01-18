@@ -96,7 +96,9 @@ public class Sound {
 	}
 	// stops the sound
 	public void stop() {
+		clip.stop();
 		clip.flush();
+		clip.drain();
 		clip.close();
 	}
 	
