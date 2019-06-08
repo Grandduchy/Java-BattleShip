@@ -1,6 +1,11 @@
 # Java-BattleShip
 
-A complete battleship game running through the CLI created with java
+A complete battleship game running through the CLI created in java with audio
+
+<p align=>
+  <img src="demo.png">
+  <img src="demo_betterChars.png">
+</p>
 
 ## Getting Started
 
