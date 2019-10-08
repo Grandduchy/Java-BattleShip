@@ -4,7 +4,6 @@ A complete battleship game running through the CLI created in java with audio
 
 <p align=>
   <img src="demo.png">
-  <img src="demo_betterChars.png">
 </p>
 
 ## Getting Started
@@ -41,7 +40,7 @@ java BattleShipGame
 
 ## Authors
 
-* *Joshua Challenger* - *Compelte Project* - [Grandduchy](https://github.com/Grandduchy)
+* *Joshua Challenger* - *Complete Project* - [Grandduchy](https://github.com/Grandduchy)
 
 ## License
 
